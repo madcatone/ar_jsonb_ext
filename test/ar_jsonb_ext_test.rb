@@ -21,4 +21,14 @@ class ArJsonbExt::Test < ActiveSupport::TestCase
     assert_equal "Financial Report", u.title
     assert_equal "2018-01-01", u.presentable_update_time
   end
+
+  test "fixture user test" do
+    u = user(:john_wick)
+    assert_equal 'John Wick', u.name
+  end
+
+  test "fixture user jdeleted" do
+    u = user(:nick_fury)
+    assert_equal true, u.deleted?
+  end
 end
