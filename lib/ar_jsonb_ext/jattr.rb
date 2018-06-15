@@ -1,3 +1,5 @@
+require "active_support/concern"
+
 module ArJsonbExt
   # define setters and getters store in jsonb column default to `meta_info`
   #   e.g. => senior_leadership_caption_en free_text_box_body_zh=
@@ -59,6 +61,6 @@ module ArJsonbExt
       end
 
     end
-  end
+  end #Jattr
 
-end
+end #ArJsonbExt
