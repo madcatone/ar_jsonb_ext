@@ -42,6 +42,7 @@ module ArJsonbExt
         define_method "destroy" do
           self.send(:"#{column}")["#{_attr}"] = Time.current
           self.save(validate: false)
+          self.__elasticsearch__.index_document if self.respond_to?(:__elasticsearch__)
         end
 
       end
