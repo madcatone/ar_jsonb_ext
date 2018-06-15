@@ -33,11 +33,12 @@ module ArJsonbExt
       def soft_destroy(_attr=:jdeleted_at, options={})
         jattr_accessor _attr
         column = options[:column].present? ? options[:column] : :meta_info
-        scope = options[:scope].present? ? options[:scope] : false
+        scope = options[:scope].present? ? options[:scope] : true
 
         default_scope do
           where("#{self.table_name}.#{column}->>'#{_attr}' is null")
-        end if scope
+        end
+        self.default_scopes = [] if scope == false
 
         define_method "destroy" do
           self.send(:"#{column}")["#{_attr}"] = Time.current
