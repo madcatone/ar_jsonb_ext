@@ -25,11 +25,20 @@ end
 
 ```ruby
 class User
+  # use Jsonb column
   soft_destroy
-  soft_destroy :jdeleted_at, scope: true, column: :meta_info
+  soft_destroy :jdeleted_at, scope: true, column: :meta_info, method: :jsonb
   soft_destroy :is_deleted
+  # use native column
+  soft_destroy :deleted_at, method: :origin
 end
 ```
+
+### parameters
+
+- scope: true/false (default: true)
+- column: :meta_info
+- method: :jsonb/:origin (default: :jsonb)
 
 
 ## Installation
