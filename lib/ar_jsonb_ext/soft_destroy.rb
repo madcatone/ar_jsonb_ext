@@ -16,34 +16,37 @@ module ArJsonbExt
           self.destroy
         end
 
-        def deleted?
-          self.jdeleted_at.present?
-        end
-
-        def recover
-          self.jdeleted_at = nil
-          self.save(validate: false)
-        end
-
       end #class_eval
     end #included
 
     module ClassMethods
 
       def soft_destroy(_attr=:jdeleted_at, options={})
-        jattr_accessor _attr
+      # def soft_destroy(*_attr)
+        # options = _attr.extract_options!
         column = options[:column].present? ? options[:column] : :meta_info
         scope = options[:scope].present? ? options[:scope] : true
+
+        jattr_accessor _attr, column: column
 
         default_scope do
           where("#{self.table_name}.#{column}->>'#{_attr}' is null")
         end
         self.default_scopes = [] if scope == false
 
-        define_method "destroy" do
-          self.send(:"#{column}")["#{_attr}"] = Time.current
+        define_method :destroy do
+          self.send(:"#{_attr}=", Time.current)
           self.save(validate: false)
           self.__elasticsearch__.index_document if self.respond_to?(:__elasticsearch__)
+        end
+
+        define_method :deleted? do
+          self.send(:"#{_attr}").present?
+        end
+
+        define_method :recover do
+          self.send(:"#{_attr}=", nil)
+          self.save(validate: false)
         end
 
       end
