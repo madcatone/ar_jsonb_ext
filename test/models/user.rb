@@ -1,4 +1,4 @@
 class User < ApplicationRecord
-  jattr_accessor *%i(enabled feedback_notifyees presentable_update_time)#, column: :meta
+  jattr_accessor *%i(code agent bio)#, column: :meta
   soft_destroy
 end

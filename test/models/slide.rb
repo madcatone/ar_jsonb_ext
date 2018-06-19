@@ -1,3 +1,4 @@
 class Slide < ApplicationRecord
-  jattr_accessor *%i(enabled feedback_notifyees presentable_update_time), column: :meta
+  jattr_accessor *%i(locale color size), column: :meta
+  soft_destroy :deleted_at, column: :meta
 end

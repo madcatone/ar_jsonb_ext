@@ -1,0 +1,11 @@
+food_report:
+  id: 1
+  title: "Food Report"
+  desc: nil
+  meta: {"locale": "zh", "color": 'green', "deleted_at": "2018-06-15T08:54:48.969Z"}
+
+exchange_report:
+  id: 2
+  title: "Exchange Report"
+  desc: nil
+  meta: {"color": "pink", "size": 'M', "locale": "zh"}

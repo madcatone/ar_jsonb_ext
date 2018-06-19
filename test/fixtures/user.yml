@@ -3,7 +3,7 @@ nick_fury:
   name: "Nick Fury"
   uid: nil
   email: "staff_99@dg.com"
-  meta_info: {"title": "ABC", "enabled": false, "jdeleted_at": "2018-06-15T08:54:48.969Z"}
+  meta_info: {"code": "0A2B3C", "agent": 'ios_app', "jdeleted_at": "2018-06-15T08:54:48.969Z"}
   stuff: false
 
 john_wick:
@@ -11,5 +11,5 @@ john_wick:
   name: "John Wick"
   uid: nil
   email: "staff_01@dg.com"
-  meta_info: {"title": "GOOOOD", "time": "2018"}
+  meta_info: {"code": "1GOOD0", "bio": "2018"}
   stuff: false
