@@ -1,0 +1,13 @@
+west_summit:
+  id: 1
+  name: 'West Summit'
+  meta_info: nil
+  deleted_at: "2018-06-01 11:22:33"
+  status: 0
+
+east_studio:
+  id: 2
+  name: 'East Studio'
+  meta_info: nil
+  deleted_at: nil
+  status: 0

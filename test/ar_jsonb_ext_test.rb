@@ -1,6 +1,7 @@
 require 'test_helper'
 require 'models/user'
 require 'models/slide'
+require 'models/company'
 
 class ArJsonbExt::Test < ActiveSupport::TestCase
   test "truth" do
@@ -39,6 +40,16 @@ class ArJsonbExt::Test < ActiveSupport::TestCase
 
   test "fixture silde test meta deleted_at" do
     u = slide(:food_report)
+    assert_equal true, u.deleted?
+  end
+
+  test "fixture company test" do
+    u = company(:east_studio)
+    assert_equal 'East Studio', u.name
+  end
+
+  test "fixture company test meta deleted_at" do
+    u = company(:west_summit)
     assert_equal true, u.deleted?
   end
 
