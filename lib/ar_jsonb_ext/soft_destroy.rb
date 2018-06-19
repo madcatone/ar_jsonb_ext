@@ -12,27 +12,37 @@ module ArJsonbExt
     included do
       class_eval do
 
-        def delete
-          self.destroy
-        end
-
       end #class_eval
     end #included
+
+    def delete
+      self.destroy
+    end
+
+    def soft_destroyed?
+      self.deleted?
+    end
 
     module ClassMethods
 
       def soft_destroy(_attr=:jdeleted_at, options={})
       # def soft_destroy(*_attr)
         # options = _attr.extract_options!
-        column = options[:column].present? ? options[:column] : :meta_info
-        scope = options[:scope].present? ? options[:scope] : true
+        _column = options[:column].present? ? options[:column] : :meta_info
+        _scope = options[:scope].present? ? options[:scope] : true
+        _method = options[:method].present? ? options[:method] : :jsonb
 
-        jattr_accessor _attr, column: column
-
-        default_scope do
-          where("#{self.table_name}.#{column}->>'#{_attr}' is null")
+        case _method
+        when :jsonb
+          jattr_accessor _attr, column: _column
+          default_scope { where("#{self.table_name}.#{_column}->>'#{_attr}' is null") }
+        when :origin
+          default_scope { where("#{self.table_name}.#{_attr} is null") }
+        else
+          nil
         end
-        self.default_scopes = [] if scope == false
+
+        self.default_scopes = [] if _scope == false
 
         define_method :destroy do
           self.send(:"#{_attr}=", Time.current)
