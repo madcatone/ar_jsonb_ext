@@ -14,6 +14,8 @@ module ArJsonbExt
 
     end
 
+    def ar_jsonb_ext?; true; end
+
     def get_jsonb_column(key, column=:meta_info)
       self.send(column)&.dig(key.to_s)
     end
@@ -40,6 +42,14 @@ module ArJsonbExt
         end
       end
 
+      def jattr_accessor(*args)
+        roptions, woptions = args, args.dup
+        jattr_reader(roptions)
+        jattr_writer(woptions)
+      end
+
+      private
+
       def warp_json_attr_define(args)
         options = args.extract_options!
         column  = options[:column] || :meta_info
@@ -52,12 +62,6 @@ module ArJsonbExt
             yield(column, method_name, jsonb_key_name)
           end
         end
-      end
-
-      def jattr_accessor(*args)
-        roptions, woptions = args, args.dup
-        jattr_reader(roptions)
-        jattr_writer(woptions)
       end
 
     end

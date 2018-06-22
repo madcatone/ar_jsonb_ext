@@ -15,12 +15,20 @@ module ArJsonbExt
       end #class_eval
     end #included
 
-    def delete
-      self.destroy
-    end
-
-    def soft_destroyed?
-      self.deleted?
+    def action_method(_action, _attr)
+      case _action
+      when :delete
+        self.send(:"#{_attr}=", Time.current)
+        self.save(validate: false)
+        self.__elasticsearch__.index_document if self.respond_to?(:__elasticsearch__)
+      when :deleted?
+        self.send(:"#{_attr}").present?
+      when :recover
+        self.send(:"#{_attr}=", nil)
+        self.save(validate: false)
+      else
+        nil
+      end
     end
 
     module ClassMethods
@@ -28,9 +36,9 @@ module ArJsonbExt
       def soft_destroy(_attr=:jdeleted_at, options={})
       # def soft_destroy(*_attr)
         # options = _attr.extract_options!
-        _column = options[:column].present? ? options[:column] : :meta_info
-        _scope = options[:scope].present? ? options[:scope] : true
-        _method = options[:method].present? ? options[:method] : :jsonb
+        _column = options[:column] || :meta_info
+        _scope = options[:scope] || true
+        _method = options[:method] || :jsonb
 
         case _method
         when :jsonb
@@ -44,21 +52,14 @@ module ArJsonbExt
 
         self.default_scopes = [] if _scope == false
 
-        define_method :destroy do
-          self.send(:"#{_attr}=", Time.current)
-          self.save(validate: false)
-          self.__elasticsearch__.index_document if self.respond_to?(:__elasticsearch__)
+        [:delete, :deleted?, :recover].each do |_action|
+          define_method _action do
+            action_method(_action, _attr)
+          end
         end
 
-        define_method :deleted? do
-          self.send(:"#{_attr}").present?
-        end
-
-        define_method :recover do
-          self.send(:"#{_attr}=", nil)
-          self.save(validate: false)
-        end
-
+        alias_method :soft_destroyed?, :deleted?
+        alias_method :destroy, :delete
       end
     end #ClassMethods
   end #SoftDestroy
