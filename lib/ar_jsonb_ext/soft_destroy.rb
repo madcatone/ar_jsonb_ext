@@ -18,6 +18,9 @@ module ArJsonbExt
     def action_method(_action, _attr)
       case _action
       when :delete
+        #  Rails checks that now in update_column.
+        #  Workaround is to clear `jdeleted_at` before updating the column.
+        #  If really need `destroyed?` method, use `update_column` instead of `save`
         self.send(:"#{_attr}=", Time.current)
         self.save(validate: false)
         self.__elasticsearch__.index_document if self.respond_to?(:__elasticsearch__)
@@ -33,12 +36,16 @@ module ArJsonbExt
 
     module ClassMethods
 
+      DEFAULT_OPTION = true
+      DEFAULT_COLUMN = :meta_info
+      DEFAULT_METHOD = :jsonb
+
       def soft_destroy(_attr=:jdeleted_at, options={})
       # def soft_destroy(*_attr)
         # options = _attr.extract_options!
-        _column = options[:column] || :meta_info
-        _scope = options[:scope] || true
-        _method = options[:method] || :jsonb
+        _column = options.fetch(:column, DEFAULT_COLUMN)
+        _scope  = options.fetch(:scope, DEFAULT_OPTION)
+        _method = options.fetch(:method, DEFAULT_METHOD)
 
         case _method
         when :jsonb
@@ -51,6 +58,7 @@ module ArJsonbExt
         end
 
         self.default_scopes = [] if _scope == false
+        # self.default_scoped = false if _scope == false
 
         [:delete, :deleted?, :recover].each do |_action|
           define_method _action do
