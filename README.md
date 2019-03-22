@@ -45,7 +45,7 @@ end
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ar_jsonb_ext', github: 'dealglobe/ar_jsonb_ext'
+gem 'ar_jsonb_ext', github: 'madcatone/ar_jsonb_ext'
 ```
 
 And then execute:
